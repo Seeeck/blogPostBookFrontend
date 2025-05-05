@@ -2,7 +2,7 @@
 import { useState } from 'react'
 
 import { Box } from '@mui/material'
-import FormLogin from './components/authentication/FormLogin'
+import FormLogin from './components/Forms/FormLogin'
 import NavBar from './components/nav/Navbar'
 
 function App() {

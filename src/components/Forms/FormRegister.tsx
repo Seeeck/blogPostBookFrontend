@@ -1,27 +1,41 @@
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
+import { useForm } from "react-hook-form";
+import InputTextField from "../InputsControllers/InputTextField";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { formRegisterSchema } from "../../querys/schemas/formRegisterSchema";
 
 
 
 const FormRegister = () => {
+
+    const { control, handleSubmit } = useForm({
+        resolver: yupResolver(formRegisterSchema)
+    })
+    const onSubmit = () => {
+
+    }
     return (
         <Grid sx={styles.gridCrearCuenta} container>
             <Grid size={12} >
                 <Typography color="#1877f2" mt={5} textAlign={"center"} variant="h4">Crea una cuenta</Typography>
             </Grid>
             <Grid>
-                <TextField sx={styles.textFieldStyle} placeholder="nombre de usuario" id="outlined-basic" label="Ingrese nombre de usuario" variant="standard" />
+                <InputTextField control={control} name="name" placeholder="Ingrese un nombre de usuario" />
             </Grid>
             <Grid>
-                <TextField sx={styles.textFieldStyle} placeholder="email" id="outlined-basic" label="Ingresar su email" variant="standard" />
+                <InputTextField control={control} name="email" placeholder="Ingrese un email" />
+
             </Grid>
             <Grid>
-                <TextField sx={styles.textFieldStyle} placeholder="contraseña" id="outlined-basic" label="Ingrese una contraseña" variant="standard" />
+                <InputTextField control={control} name="password" placeholder="Ingrese una contraseña" />
+
             </Grid>
             <Grid>
-                <TextField sx={styles.textFieldStyle} placeholder="confirmar contraseña" id="outlined-basic" label="Ingrese nuevamente la contraseña" variant="standard" />
+                <InputTextField control={control} name="password_confirmation" placeholder="Confirmar contraseña" />
+
             </Grid>
             <Grid>
-                <Button sx={styles.crearCuentaButtonStyle} variant="contained">Crear cuenta</Button>
+                <Button onClick={handleSubmit(onSubmit)} sx={styles.crearCuentaButtonStyle} variant="contained">Crear cuenta</Button>
             </Grid>
         </Grid>
     )
@@ -29,7 +43,7 @@ const FormRegister = () => {
 
 const styles: { [key: string]: React.CSSProperties } = {
     gridCrearCuenta: {
-        marginTop: 10,
+        marginTop: 5,
         marginBottom: 10,
         display: "flex",
         flexDirection: "column",
@@ -47,7 +61,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         width: 250,
         margin: 2
     },
-    crearCuentaButtonStyle:{
+    crearCuentaButtonStyle: {
         margin: 2,
         color: "white",
         backgroundColor: "#1877f2"

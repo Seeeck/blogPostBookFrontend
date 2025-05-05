@@ -4,8 +4,8 @@ import "./main.css"
 import App from './App.tsx'
 import { BrowserRouter, Route, Routes } from "react-router";
 import NavBar from './components/nav/Navbar.tsx';
-import FormLogin from './components/authentication/FormLogin.tsx';
-import FormRegister from './components/authentication/FormRegister.tsx';
+import FormLogin from './components/Forms/FormLogin.tsx';
+import FormRegister from './components/Forms/FormRegister.tsx';
 
 createRoot(document.getElementById('root')!).render(
 
