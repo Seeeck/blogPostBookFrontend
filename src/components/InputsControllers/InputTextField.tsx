@@ -5,8 +5,9 @@ type PropsInputTextField = {
     control: Control<any>
     name: string
     placeholder: string
+    type: string
 }
-function InputTextField({ control, name, placeholder }: PropsInputTextField) {
+function InputTextField({ control, name, placeholder, type }: PropsInputTextField) {
     const {
         field,
         fieldState: { error }
@@ -29,12 +30,14 @@ function InputTextField({ control, name, placeholder }: PropsInputTextField) {
             sx={styles.textFieldStyle}
             error={!!error}
             helperText={error?.message}
+            type={type}
         />
     );
 }
 const styles: { [key: string]: React.CSSProperties } = {
     textFieldStyle: {
-        margin: 2
+        margin: 2,
+        width: 200
     }
 }
 export default InputTextField;
