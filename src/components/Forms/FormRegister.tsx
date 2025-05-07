@@ -5,6 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { formRegisterSchema } from "../../querys/schemas/formRegisterSchema";
 import useRegisterUser from "../../querys/useRegisterUser";
 import { toast } from "react-toastify";
+import { useNavigate, useNavigation } from "react-router";
 
 type DataProps = {
     name: string
@@ -16,17 +17,22 @@ type DataProps = {
 const FormRegister = () => {
 
     const { mutate } = useRegisterUser()
+    const navigate = useNavigate();
     const { control, handleSubmit } = useForm({
         resolver: yupResolver(formRegisterSchema)
     })
-    const onSubmit = (data: DataProps) => {
+    const onSubmit = (dataProps: DataProps) => {
 
-        mutate(data, {
+        mutate(dataProps, {
             onSuccess: data => {
+              
                 toast(data?.data?.message, { type: "success" })
+                navigate("/alertaConfirmacionCorreo", { state: { email: dataProps.email },replace:true })
 
             },
             onError: data => {
+        
+                toast(data?.response?.data?.message, { type: "error" })
                 toast(data?.data?.message, { type: "error" })
 
             }

@@ -1,15 +1,54 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Grid, TextField, Typography } from "@mui/material"
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { formLoginchema } from "../../querys/schemas/formLoginSchema";
+import InputTextField from "../InputsControllers/InputTextField";
+import useLoginUser from "../../querys/useLoginUser";
+import { toast } from "react-toastify";
+import { useAuthenticationStore } from "../../stores/userAuthenticationStore";
 
 
 
 const FormLogin = () => {
+    const saveToken = useAuthenticationStore(state => state.saveToken);
+    const setUser = useAuthenticationStore(state => state.setUser);
     let navigate = useNavigate();
+    const { mutate } = useLoginUser()
+    const { control, handleSubmit } = useForm({
+        resolver: yupResolver(formLoginchema)
+    })
+
+
+    const onSubmit = (data: { email: string, password: string }) => {
+
+        mutate(data, {
+            onSuccess: data => {
+                toast(data.data.message, { type: "success" })
+                //almacenar token en un store
+
+                //saveToken(data?.data?.token);
+                // setUser({ username: data.data.user.username, email: data.data.user.email })
+                localStorage.setItem('username', data.data.user.username);
+                localStorage.setItem('email', data.data.user.email);
+                localStorage.setItem('token', data?.data?.token);
+            },
+            onError: data => {
+
+                if (data.response.data.code == 401) {
+                    toast(data?.response?.data?.message, { type: "error" })
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('email');
+                    localStorage.removeItem('token');
+                }
+            }
+
+        })
+    }
 
     const handleCrearCuenta = () => {
         navigate("/crearCuenta")
     }
-
 
     return (
 
@@ -18,13 +57,13 @@ const FormLogin = () => {
                 <Typography color="#1877f2" mt={5} textAlign={"center"} variant="h4">Ingresar</Typography>
             </Grid>
             <Grid>
-                <TextField sx={styles.textFieldStyle} placeholder="email" id="outlined-basic" label="Ingresar email" variant="standard" />
+                <InputTextField type="text" control={control} name="email" placeholder="Ingrese su email" />
             </Grid>
             <Grid>
-                <TextField sx={styles.textFieldStyle} placeholder="contraseña" id="outlined-basic" label="Ingresar contraseña" variant="standard" />
+                <InputTextField type="password" control={control} name="password" placeholder="Ingrese su contraseña" />
             </Grid>
             <Grid>
-                <Button sx={styles.loginButtonStyle} variant="contained">Ingresar</Button>
+                <Button onClick={handleSubmit(onSubmit)} sx={styles.loginButtonStyle} variant="contained">Ingresar</Button>
             </Grid>
             <Grid >
 

@@ -2,9 +2,12 @@ import { Box, Button, Drawer, Grid, List, ListItem, ListItemButton, ListItemText
 import React from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from "react-router";
-const NavBar = () => {
 
-    let navigate = useNavigate();
+const NavBar = () => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+
+    const navigate = useNavigate();
     const matches = useMediaQuery('(max-width:844px)');
 
     const [open, setOpen] = React.useState(false);
@@ -34,8 +37,11 @@ const NavBar = () => {
     return (
         <Grid container bgcolor={"#1877f2"} sx={{ margin: 0, padding: 0 }}>
             <Grid size={9}>
+                <Button>
 
-                <Typography onClick={handleOnClickPostbook} sx={styles.postBookTitleStyle} variant={matches ? "h4" : "h2"}>PostBook</Typography>
+
+                    <Typography onClick={handleOnClickPostbook} sx={styles.postBookTitleStyle} variant={matches ? "h4" : "h2"}>PostBook</Typography>
+                </Button>
             </Grid>
             {matches ?
                 <Grid size={3}>
@@ -45,12 +51,28 @@ const NavBar = () => {
 
                 :
                 <>
-                    <Grid margin={2}>
-                        <Typography sx={styles.loginTitleStyle} variant="h5">Login</Typography>
-                    </Grid>
-                    <Grid margin={2} spacing={2}>
-                        <Typography sx={styles.logoutTitleStyle} variant="h5">Logout</Typography>
-                    </Grid>
+                    {!token && <Grid margin={2}>
+                        <Button>
+
+
+                            <Typography sx={styles.loginTitleStyle} variant="h5">Login</Typography>
+                        </Button>
+                    </Grid>}
+                    {token && <Grid margin={2} spacing={2}>
+                        <Button>
+
+
+                            <Typography sx={styles.logoutTitleStyle} variant="h5">Perfil</Typography>
+
+                        </Button>
+                    </Grid>}
+                    {token && <Grid margin={2} spacing={2}>
+                        <Button>
+
+
+                            <Typography sx={styles.logoutTitleStyle} variant="h5">Salir</Typography>
+                        </Button>
+                    </Grid>}
                 </>}
             <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
                 {DrawerList}
