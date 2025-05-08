@@ -13,6 +13,8 @@ import { useAuthenticationStore } from "../../stores/userAuthenticationStore";
 const FormLogin = () => {
     const saveToken = useAuthenticationStore(state => state.saveToken);
     const setUser = useAuthenticationStore(state => state.setUser);
+    const setIsLogged = useAuthenticationStore(state => state.setIsLogged);
+    const isLogged = useAuthenticationStore(state => state.isLogged);
     let navigate = useNavigate();
     const { mutate } = useLoginUser()
     const { control, handleSubmit } = useForm({
@@ -25,13 +27,14 @@ const FormLogin = () => {
         mutate(data, {
             onSuccess: data => {
                 toast(data.data.message, { type: "success" })
-                //almacenar token en un store
-
-                //saveToken(data?.data?.token);
-                // setUser({ username: data.data.user.username, email: data.data.user.email })
                 localStorage.setItem('username', data.data.user.username);
                 localStorage.setItem('email', data.data.user.email);
                 localStorage.setItem('token', data?.data?.token);
+                //almacenar token en un store
+                setIsLogged(true);
+                saveToken(data?.data?.token);
+                setUser({ username: data.data.user.username, email: data.data.user.email })
+
             },
             onError: data => {
 
@@ -40,6 +43,9 @@ const FormLogin = () => {
                     localStorage.removeItem('username');
                     localStorage.removeItem('email');
                     localStorage.removeItem('token');
+                    saveToken("");
+                    setUser({ email: "", username: "" })
+                    setIsLogged(false)
                 }
             }
 

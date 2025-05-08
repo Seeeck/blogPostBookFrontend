@@ -25,7 +25,7 @@ clientAxios.interceptors.response.use(
     (error) => {
         if (error.response?.status === 401) {
             localStorage.removeItem("token")
-            toast("Error de autenticación")
+            toast("Error de autenticación", { type: "error" })
 
         }
         return Promise.reject(error);

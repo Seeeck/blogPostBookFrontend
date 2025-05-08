@@ -3,26 +3,33 @@ import { create } from 'zustand'
 type CounterState = {
     user: { username: string, email: string }
     token: string
-    deleteToken: () => void
+    isLogged:boolean
     saveToken: (newToken: string) => void
     setUser: (newUser: { username: string, email: string }) => void
-    setIsValidToken: (isValid: boolean) => void
-    isTokenValid: boolean
+    setIsLogged:(logged:boolean)=>void
+
 
 }
 
 export const useAuthenticationStore = create<CounterState>((set) => ({
-    token: "",
-    user: { username: "", email: "" },
-    isTokenValid: false,
-    deleteToken: () => set((state) => ({ token: "" })),
-    saveToken: (newToken) => set((state) => ({ token: newToken })),
+    token: localStorage.getItem("token") || "",
+    user: {
+        username: localStorage.getItem("username") || "",
+        email: localStorage.getItem("email") || ""
+    },
+    isLogged:false,
+    setIsLogged: (logged: boolean) => set(() => ({ isLogged: logged })),
+    //setear en local storage
+    saveToken: (newToken) => set((state) => {
+        localStorage.setItem("token", newToken);
+        return ({ token: newToken })
+    }),
+    //setear en local storage
     setUser: (newUser) => set((state) => {
+        localStorage.setItem("username", newUser.username)
+        localStorage.setItem("email", newUser.email)
         const { username, email } = newUser;
         return { user: { username, email } };
     }),
-    setIsValidToken: (isValid) => set({ isTokenValid: isValid })
-
-
 
 }))

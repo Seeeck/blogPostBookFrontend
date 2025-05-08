@@ -2,15 +2,22 @@ import { Box, Button, Drawer, Grid, List, ListItem, ListItemButton, ListItemText
 import React from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from "react-router";
+import { useAuthenticationStore } from "../../stores/userAuthenticationStore";
+import useLogoutUser from "../../querys/useLogoutUser";
+import { toast } from "react-toastify";
 
 const NavBar = () => {
-    const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user");
-
+    const { mutate } = useLogoutUser()
+    const setToken = useAuthenticationStore(state => state.saveToken);
+    const setUser = useAuthenticationStore(state => state.setUser);
+    const token = useAuthenticationStore(state => state.token);
+    const user = useAuthenticationStore(state => state.user)
+    const setIsLogged = useAuthenticationStore(state => state.setIsLogged);
+    const isLogged = useAuthenticationStore(state => state.isLogged);
     const navigate = useNavigate();
     const matches = useMediaQuery('(max-width:844px)');
-
     const [open, setOpen] = React.useState(false);
+
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen);
@@ -18,6 +25,29 @@ const NavBar = () => {
 
     const handleOnClickPostbook = () => {
         navigate("/")
+    }
+    const handleLogout = () => {
+        //remover token del backend
+        //si se remueve del backend remover del frontend
+
+        mutate({
+            token: token,
+            email: user.email,
+            username: user.username,
+        }, {
+            onSuccess: data => {
+
+                toast(data.data.message, { type: "success" })
+                setToken(""),
+                    setUser({ email: "", username: "" });
+                setIsLogged(false)
+
+            }, onError: data => {
+                toast(data.data.message, { type: "error" })
+
+            }
+        });
+
     }
     const DrawerList = (
         <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
@@ -58,7 +88,7 @@ const NavBar = () => {
                             <Typography sx={styles.loginTitleStyle} variant="h5">Login</Typography>
                         </Button>
                     </Grid>}
-                    {token && <Grid margin={2} spacing={2}>
+                    {isLogged && <Grid margin={2} spacing={2}>
                         <Button>
 
 
@@ -66,8 +96,8 @@ const NavBar = () => {
 
                         </Button>
                     </Grid>}
-                    {token && <Grid margin={2} spacing={2}>
-                        <Button>
+                    {isLogged && <Grid margin={2} spacing={2}>
+                        <Button onClick={handleLogout}>
 
 
                             <Typography sx={styles.logoutTitleStyle} variant="h5">Salir</Typography>

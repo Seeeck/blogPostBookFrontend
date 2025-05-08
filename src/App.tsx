@@ -14,27 +14,29 @@ import { toast } from 'react-toastify'
 function App() {
 
   const { mutate } = useVerifyToken();
-  const token = localStorage.getItem("token")
-  const email = localStorage.getItem("email")
-  const username = localStorage.getItem("username")
-
-
+  const token = useAuthenticationStore(state => state.token);
+  const user = useAuthenticationStore(state => state.user);
+  const setToken = useAuthenticationStore(state => state.saveToken)
+  const setUser = useAuthenticationStore(state => state.setUser)
+  const setIsLogged = useAuthenticationStore(state => state.setIsLogged);
+  const isLogged = useAuthenticationStore(state => state.isLogged);
   useEffect(() => {
 
 
     //verificar si el token es válido y si el usuario es el mismo
-    if (token && email && username) {
-      mutate({ email: email, username: username, token: token }, {
+    if (token && user.email && user.username) {
+      mutate({ email: user.email, username: user.username, token: token }, {
         onSuccess(data) {
 
           toast("Usuario verificado", { type: "success" })
+          setIsLogged(true);
         },
         onError(data) {
-          console.log(data)
-          localStorage.removeItem("token")
-          localStorage.removeItem("username")
-          localStorage.removeItem("email")
           toast("La sesión expiró", { type: "warning" });
+          setToken("")
+          setUser({ email: "", username: "" });
+          setIsLogged(false)
+
         }
       });
 
@@ -49,12 +51,7 @@ function App() {
   return (
     <Box >
       <NavBar />
-      {!token && <FormLogin />}
-
-
-
-
-
+      {!isLogged && <FormLogin />}
     </Box>
   )
 }
