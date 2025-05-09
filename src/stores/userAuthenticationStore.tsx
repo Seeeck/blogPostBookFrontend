@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-
+import { persist, createJSONStorage } from 'zustand/middleware'
 type CounterState = {
     user: { username: string, email: string }
     token: string
@@ -11,13 +11,13 @@ type CounterState = {
 
 }
 
-export const useAuthenticationStore = create<CounterState>((set) => ({
+export const useAuthenticationStore =  create<CounterState>((set) => ({
     token: localStorage.getItem("token") || "",
     user: {
         username: localStorage.getItem("username") || "",
         email: localStorage.getItem("email") || ""
     },
-    isLogged:false,
+    isLogged:localStorage.getItem("token")? true:false,
     setIsLogged: (logged: boolean) => set(() => ({ isLogged: logged })),
     //setear en local storage
     saveToken: (newToken) => set((state) => {

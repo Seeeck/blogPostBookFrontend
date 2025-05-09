@@ -1,21 +1,25 @@
 import { Box, Button, Drawer, Grid, List, ListItem, ListItemButton, ListItemText, Typography, useMediaQuery } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from "react-router";
 import { useAuthenticationStore } from "../../stores/userAuthenticationStore";
 import useLogoutUser from "../../querys/useLogoutUser";
 import { toast } from "react-toastify";
 
+import useVerifyToken from "../../querys/useVerifyToken";
+
 const NavBar = () => {
     const { mutate } = useLogoutUser()
+    const { mutate: verifyToken } = useVerifyToken()
     const setToken = useAuthenticationStore(state => state.saveToken);
     const setUser = useAuthenticationStore(state => state.setUser);
     const token = useAuthenticationStore(state => state.token);
     const user = useAuthenticationStore(state => state.user)
     const setIsLogged = useAuthenticationStore(state => state.setIsLogged);
+ 
     const isLogged = useAuthenticationStore(state => state.isLogged);
     const navigate = useNavigate();
-    const matches = useMediaQuery('(max-width:844px)');
+    const matches = useMediaQuery('(max-width:974px)');
     const [open, setOpen] = React.useState(false);
 
 
@@ -41,6 +45,7 @@ const NavBar = () => {
                 setToken(""),
                     setUser({ email: "", username: "" });
                 setIsLogged(false)
+                navigate("/login")
 
             }, onError: data => {
                 toast(data.data.message, { type: "error" })
@@ -49,6 +54,38 @@ const NavBar = () => {
         });
 
     }
+
+    useEffect(() => {
+
+
+        //verificar si el token es válido y si el usuario es el mismo
+        if (token && user.email && user.username) {
+
+            verifyToken({ email: user.email, username: user.username, token: token }, {
+                onSuccess(data) {
+                    navigate("/")
+                    toast(data.data.message, { type: "success" })
+                    setIsLogged(true);
+                  
+                },
+                onError(data) {
+                    setIsLogged(false)
+                    setToken("")
+                    setUser({ email: "", username: "" });
+                    toast(data.data.message, { type: "warning" });
+                    
+                   
+
+
+                }
+            });
+
+        }
+
+    }, [])
+
+
+
     const DrawerList = (
         <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
             <List>

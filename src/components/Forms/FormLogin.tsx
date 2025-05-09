@@ -34,7 +34,7 @@ const FormLogin = () => {
                 setIsLogged(true);
                 saveToken(data?.data?.token);
                 setUser({ username: data.data.user.username, email: data.data.user.email })
-
+                navigate("/")
             },
             onError: data => {
 
@@ -46,6 +46,7 @@ const FormLogin = () => {
                     saveToken("");
                     setUser({ email: "", username: "" })
                     setIsLogged(false)
+                    navigate("/login")
                 }
             }
 
@@ -59,13 +60,13 @@ const FormLogin = () => {
     return (
 
         <Grid sx={styles.boxLogin} container spacing={2}>
-            <Grid size={12} >
+            <Grid  >
                 <Typography color="#1877f2" mt={5} textAlign={"center"} variant="h4">Ingresar</Typography>
             </Grid>
-            <Grid>
+            <Grid size={{lg:9}}>
                 <InputTextField type="text" control={control} name="email" placeholder="Ingrese su email" />
             </Grid>
-            <Grid>
+            <Grid size={{lg:9}}>
                 <InputTextField type="password" control={control} name="password" placeholder="Ingrese su contraseña" />
             </Grid>
             <Grid>

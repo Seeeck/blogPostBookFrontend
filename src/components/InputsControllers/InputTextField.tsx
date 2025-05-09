@@ -6,8 +6,10 @@ type PropsInputTextField = {
     name: string
     placeholder: string
     type: string
+    multiline?: boolean,
+    rows?: number
 }
-function InputTextField({ control, name, placeholder, type }: PropsInputTextField) {
+function InputTextField({ control, name, placeholder, type, multiline = false, rows = 1 }: PropsInputTextField) {
     const {
         field,
         fieldState: { error }
@@ -25,19 +27,21 @@ function InputTextField({ control, name, placeholder, type }: PropsInputTextFiel
             value={field.value}
             name={field.name}
             inputRef={field.ref}
-            variant="standard"
+            variant="outlined"
             placeholder={placeholder}
             sx={styles.textFieldStyle}
             error={!!error}
             helperText={error?.message}
             type={type}
+            multiline={multiline}
+            rows={rows}
         />
     );
 }
 const styles: { [key: string]: React.CSSProperties } = {
     textFieldStyle: {
-        margin: 2,
-        width: 200
+        
+        width: "100%"
     }
 }
 export default InputTextField;
