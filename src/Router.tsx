@@ -12,7 +12,7 @@ import { } from "react-router"
 
 const Router = () => {
     const isLogged = useAuthenticationStore(state => state.isLogged)
-    console.log("LOGEADO?::",isLogged)
+
     return (
         <BrowserRouter>
             <NavBar />

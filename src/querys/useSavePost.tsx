@@ -5,15 +5,21 @@
 import clientAxios from "./clientAxios"
 import { useMutation } from "@tanstack/react-query"
 
-type Params = {
-    mensaje:string
-    imagen:string
-}
 
 
-const postSavePost = async (params:Params) => {
+const postSavePost = async (params: { mensaje: string, imagen: File }) => {
 
-    const data = await clientAxios.post("/registrarUsuario",params);
+
+    const formdata = new FormData()
+    formdata.append("mensaje", params.mensaje)
+    formdata.append("imagen", params.imagen)
+
+    const data = await clientAxios.post("/registrarPost", formdata, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        }
+    });
+   
     return data;
 }
 

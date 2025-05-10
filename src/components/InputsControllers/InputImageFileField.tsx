@@ -7,10 +7,14 @@ type Props = {
     control: Control<any>
     inputRef: RefObject<null>
     setImageURL: (file: string) => void
+  
+
+
+
 }
 const InputImageFileField = ({ name, control, inputRef, setImageURL }: Props) => {
 
-    const { field: { onChange, value },fieldState:{error} } = useController({ name, control })
+    const { field: { onChange, value }, fieldState: { error } } = useController({ name, control })
 
     return (
         <Box>
@@ -23,12 +27,13 @@ const InputImageFileField = ({ name, control, inputRef, setImageURL }: Props) =>
                 ref={inputRef}
                 onChange={e => {
                     onChange(e.target.files[0])
+                
                     const url = URL.createObjectURL(e.target.files[0]);
                     setImageURL(url);
                 }}
                 style={{ display: 'none' }}
             />
-          
+
         </Box>
     )
 }
