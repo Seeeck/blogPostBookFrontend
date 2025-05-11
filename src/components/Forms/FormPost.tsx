@@ -9,7 +9,7 @@ import formPostSchema from "../../querys/schemas/formPostSchema";
 import ClearIcon from '@mui/icons-material/Clear';
 import useSavePost from "../../querys/useSavePost";
 import { toast } from "react-toastify";
-const FormPost = () => {
+const FormPost = ({ refetch }: { refetch: () => void }) => {
     const { mutate } = useSavePost()
     const { control, handleSubmit, formState: { errors }, reset } = useForm({
         defaultValues: { mensaje: "", imagen: null },
@@ -28,10 +28,13 @@ const FormPost = () => {
 
     }
     const onSubmit = (data: any) => {
+        console.log("IMAGEN::", data)
         mutate(data, {
             onSuccess: (data) => {
                 reset()
+                refetch()
                 setImageURL("")
+                inputRef.current.value = ""
                 toast(data.data.message, { type: "success" })
             },
             onError: () => {

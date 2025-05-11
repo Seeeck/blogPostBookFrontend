@@ -16,7 +16,7 @@ const NavBar = () => {
     const token = useAuthenticationStore(state => state.token);
     const user = useAuthenticationStore(state => state.user)
     const setIsLogged = useAuthenticationStore(state => state.setIsLogged);
- 
+
     const isLogged = useAuthenticationStore(state => state.isLogged);
     const navigate = useNavigate();
     const matches = useMediaQuery('(max-width:974px)');
@@ -66,15 +66,15 @@ const NavBar = () => {
                     navigate("/")
                     toast(data.data.message, { type: "success" })
                     setIsLogged(true);
-                  
+
                 },
                 onError(data) {
                     setIsLogged(false)
                     setToken("")
                     setUser({ email: "", username: "" });
                     toast(data.data.message, { type: "warning" });
-                    
-                   
+
+
 
 
                 }
@@ -89,14 +89,23 @@ const NavBar = () => {
     const DrawerList = (
         <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
             <List>
-                {['Login', 'Logout'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
 
-                            <ListItemText primary={text} />
+                {!isLogged ? <ListItem key={"login"} disablePadding>
+                    <ListItemButton >
+
+                        <ListItemText primary={"Iniciar sesión"} />
+                    </ListItemButton>
+                </ListItem>
+                    :
+                    <ListItem key={"Logout"} disablePadding>
+                        <ListItemButton onClick={handleLogout}>
+
+                            <ListItemText primary={"Cerrar sesión"} />
                         </ListItemButton>
                     </ListItem>
-                ))}
+                }
+
+
             </List>
 
         </Box>
@@ -125,14 +134,7 @@ const NavBar = () => {
                             <Typography sx={styles.loginTitleStyle} variant="h5">Login</Typography>
                         </Button>
                     </Grid>}
-                    {isLogged && <Grid margin={2} spacing={2}>
-                        <Button>
 
-
-                            <Typography sx={styles.logoutTitleStyle} variant="h5">Perfil</Typography>
-
-                        </Button>
-                    </Grid>}
                     {isLogged && <Grid margin={2} spacing={2}>
                         <Button onClick={handleLogout}>
 
